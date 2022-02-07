@@ -40,10 +40,10 @@ const addManager = () => {
     ])
         .then(
             data => {
-                const manager = new Manager(data.name, data.email, data.id, data.officeNumber)
-                teamArr.push(manager)
-                console.log(teamArr)
-                moreEmployee()
+                const manager = new Manager(data.name, data.email, data.id, data.officeNumber);
+                teamArr.push(manager);
+                console.log(teamArr);
+                addEmployee();
             })
 }
 
@@ -63,62 +63,60 @@ const addEmployee = () => {
         {
             type: "input",
             name: "email",
-            message: "What is the employee's email?"
+            message: "What is the employee's email address?"
         },
         {
             type: "input",
             name: "id",
             message: "What is the emplpoyee's ID number?"
-        }
-    ])
-    .then(
-        data => {
-            const employee = new Employee(data.name, data.email, data.id)
-            teamArr.push(employee)
-            if (data.role === "Engineer") {
-                inquirer.prompt([
-                    {
-                        type: "input",
-                        name: "github",
-                        message: "What is the user's GitHub username?"
-                    }
-                ])
-                .then( data => {
-                    const engineer = new Engineer(data.name, data.email, data.id, data.github)
-                    teamArr.push(engineer)
-                })
-            } else {
-                inquirer.prompt([
-                    {
-                        type: "input",
-                        name: "school",
-                        message: "What is the intern's school?"
-                    }
-                ])
-                .then( data => {
-                    const intern = new Intern(data.name, data.email, data.id, data.school)
-                    teamArr.push(intern)
-                })
-            }
-            console.log(teamArr)
-            moreEmployee()
-        })
-}
-
-const moreEmployee = () => {
-    inquirer.prompt([
+        },
+        {
+            type: "input",
+            name: "github",
+            message: "What is the engineer's GitHub username?",
+            when: (input) => input.role === "Engineer"
+        },
+        {
+            type: "input",
+            name: "school",
+            message: "What is the name of the intern's school?",
+            when: (input) => input.role === "Intern"
+        },
         {
             type: "confirm",
             name: "add",
-            message: "Would you like to add an employee?"
+            message: "Would you like to add an employee?",
+            default: false
         }
     ])
-    .then( data => {
-        if (data.add) {
-            addEmployee();
+        .then(
+            data => {
+                if (data.role === "Engineer") {
+                    const engineer = new Engineer(data.name, data.id, data.email, data.github)
+                    teamArr.push(engineer)
+                } else if (data.role === "Intern") {
+                    const intern = new Intern(data.name, data.id, data.email, data.school)
+                    teamArr.push(intern)
+                }
+                if (data.add) {
+                    return addEmployee();
+                } else {
+                    return console.log(teamArr);
+                }
+            }
+        )
+}
+
+const writeFile = data => {
+    fs.writeFile('./dist/index.html', data, err => {
+        if (err) {
+            console.log(err);
+            return
+        } else {
+            console.log("Your team's profile has been successfully created!")
         }
     })
 }
 
 addManager()
-
+writeFile()
