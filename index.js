@@ -8,7 +8,7 @@ const generateHTML = require('./src/generateHTML');
 const teamArr = [];
 
 const addManager = () => {
-    inquirer.prompt([
+    return inquirer.prompt([
         {
             type: "input",
             name: "name",
@@ -42,13 +42,11 @@ const addManager = () => {
             data => {
                 const manager = new Manager(data.name, data.email, data.id, data.officeNumber);
                 teamArr.push(manager);
-                console.log(teamArr);
-                addEmployee();
             })
 }
 
 const addEmployee = () => {
-    inquirer.prompt([
+    return inquirer.prompt([
         {
             type: "list",
             name: "role",
@@ -103,7 +101,7 @@ const addEmployee = () => {
                 } else {
                     return console.log(teamArr);
                 }
-            }
+        }
         )
 }
 
@@ -119,4 +117,14 @@ const writeFile = data => {
 }
 
 addManager()
-writeFile()
+  .then(addEmployee)
+  .then(teamArr => {
+      console.log(teamArr)
+    return generateHTML(teamArr);
+  })
+  .then(pageHTML => {
+    return writeFile(pageHTML);
+  })
+  .catch(err => {
+ console.log(err);
+  });
