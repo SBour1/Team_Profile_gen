@@ -99,7 +99,7 @@ const addEmployee = () => {
                 if (data.add) {
                     return addEmployee();
                 } else {
-                    return console.log(teamArr);
+                    return teamArr;
                 }
         }
         )
@@ -119,7 +119,6 @@ const writeFile = data => {
 addManager()
   .then(addEmployee)
   .then(teamArr => {
-      console.log(teamArr)
     return generateHTML(teamArr);
   })
   .then(pageHTML => {
