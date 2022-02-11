@@ -24,6 +24,19 @@ const addManager = () => {
         },
         {
             type: "input",
+            name: "id",
+            message: "What is the manager's ID number?",
+            validate: idNo => {
+                if (isNaN(idNo)) {
+                    console.log("\nPlease enter a valid ID number!\n")
+                    return false
+                } else {
+                    return true
+                }
+            }
+        },
+        {
+            type: "input",
             name: "email",
             message: "What is the manager's email?",
             validate: email => {
@@ -33,19 +46,6 @@ const addManager = () => {
                 } else {
                     console.log("\nPlease enter a valid email! \n")
                     return false
-                }
-            }
-        },
-        {
-            type: "input",
-            name: "id",
-            message: "What is the manager's ID number?",
-            validate: idNo => {
-                if (isNaN(idNo)) {
-                    console.log("\nPlease enter a valid ID number!\n")
-                    return false
-                } else {
-                    return true
                 }
             }
         },
@@ -65,7 +65,7 @@ const addManager = () => {
     ])
         .then(
             data => {
-                const manager = new Manager(data.name, data.email, data.id, data.officeNumber);
+                const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
                 teamArr.push(manager);
             })
 }
@@ -167,7 +167,7 @@ const addEmployee = () => {
                 } else {
                     return teamArr;
                 }
-        }
+            }
         )
 }
 
@@ -183,13 +183,13 @@ const writeFile = data => {
 }
 
 addManager()
-  .then(addEmployee)
-  .then(teamArr => {
-    return generateHTML(teamArr);
-  })
-  .then(pageHTML => {
-    return writeFile(pageHTML);
-  })
-  .catch(err => {
- console.log(err);
-  });
+    .then(addEmployee)
+    .then(teamArr => {
+        return generateHTML(teamArr);
+    })
+    .then(pageHTML => {
+        return writeFile(pageHTML);
+    })
+    .catch(err => {
+        console.log(err);
+    });
